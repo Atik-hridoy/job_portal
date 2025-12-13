@@ -220,33 +220,73 @@ class OtpView extends GetView<OtpController> {
     return Obx(() {
       final ready = controller.isResendAvailable.value;
       final remaining = controller.secondsRemaining.value;
-      return Center(
-        child: RichText(
-          text: TextSpan(
-            style: TextStyle(
-              color: const Color(0xFF4A5280),
-              fontSize: 13.sp,
+      return Container(
+        width: double.infinity,
+        margin: EdgeInsets.symmetric(horizontal: 12.w),
+        padding: EdgeInsets.symmetric(horizontal: 18.w, vertical: 16.h),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(24.r),
+          gradient: const LinearGradient(
+            colors: [Color(0xFFFFFFFF), Color(0xFFE8ECFF)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: const Color(0xFF6B73FF).withOpacity(0.12),
+              blurRadius: 22,
+              offset: const Offset(0, 10),
             ),
-            children: [
-              TextSpan(
-                text: ready
-                    ? "Didn't receive a OTP? "
-                    : 'Resend OTP in ${remaining}s  ',
+          ],
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              width: 32.w,
+              height: 32.w,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: const Color(0xFF6B73FF).withOpacity(0.12),
               ),
-              TextSpan(
-                text: 'Resend OTP',
-                recognizer: TapGestureRecognizer()
-                  ..onTap = ready ? controller.resendCode : null,
-                style: TextStyle(
-                  color: ready
-                      ? const Color(0xFF6B73FF)
-                      : const Color(0xFF6B73FF).withOpacity(0.5),
-                  fontWeight: FontWeight.bold,
-                  decoration: TextDecoration.underline,
+              child: Icon(
+                Icons.timer_outlined,
+                size: 18.sp,
+                color: const Color(0xFF6B73FF),
+              ),
+            ),
+            SizedBox(width: 12.w),
+            Flexible(
+              child: RichText(
+                textAlign: TextAlign.center,
+                text: TextSpan(
+                  style: TextStyle(
+                    color: const Color(0xFF4A5280),
+                    fontSize: 13.sp,
+                  ),
+                  children: [
+                    TextSpan(
+                      text: ready
+                          ? "Didn't receive a OTP? "
+                          : 'Resend OTP in ${remaining}s  ',
+                    ),
+                    TextSpan(
+                      text: 'Resend OTP',
+                      recognizer: TapGestureRecognizer()
+                        ..onTap = ready ? controller.resendCode : null,
+                      style: TextStyle(
+                        color: ready
+                            ? const Color(0xFF6B73FF)
+                            : const Color(0xFF6B73FF).withOpacity(0.5),
+                        fontWeight: FontWeight.bold,
+                        decoration: TextDecoration.underline,
+                      ),
+                    ),
+                  ],
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       );
     });

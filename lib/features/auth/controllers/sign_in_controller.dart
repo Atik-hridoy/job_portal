@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../models/auth_model.dart';
 import 'package:job_portal/routes/app_routers.dart';
+import '../../../../core/repositories/auth_repository.dart';
+import '../../../../core/services/storage_service.dart';
 
 class SignInController extends GetxController {
   // Form key
@@ -11,9 +13,12 @@ class SignInController extends GetxController {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
+  // Storage is now handled by StorageService
+
   // Observable states
   final RxBool isLoading = false.obs;
   final RxBool isPasswordVisible = false.obs;
+  final RxBool rememberMe = false.obs;
   final Rxn<User> currentUser = Rxn<User>();
 
   // Toggle password visibility
@@ -21,37 +26,83 @@ class SignInController extends GetxController {
     isPasswordVisible.value = !isPasswordVisible.value;
   }
 
+  // Save token
+  void _saveToken(String? token) async {
+    if (token != null) {
+      await StorageService.saveToken(token);
+    }
+  }
+
+  // Save credentials
+  void _saveCredentials() async {
+    if (rememberMe.value) {
+      await StorageService.saveData('remembered_email', emailController.text);
+      await StorageService.saveData('remembered_password', passwordController.text);
+      await StorageService.saveData('remember_me', true);
+    } else {
+      await StorageService.removeData('remembered_email');
+      await StorageService.removeData('remembered_password');
+      await StorageService.removeData('remember_me');
+    }
+  }
+
+  // Check if user is already logged in
+  bool isLoggedIn() {
+    final token = StorageService.getToken();
+    return token != null && token.isNotEmpty;
+  }
+
+  // Load saved credentials
+  void _loadSavedCredentials() {
+    rememberMe.value = StorageService.readData('remember_me') ?? false;
+    if (rememberMe.value) {
+      emailController.text = StorageService.readData('remembered_email') ?? '';
+      passwordController.text = StorageService.readData('remembered_password') ?? '';
+    }
+  }
+
   // Login function
   Future<void> login() async {
     try {
       isLoading.value = true;
 
-      final loginRequest = LoginRequest(
-        email: emailController.text.trim(),
-        password: passwordController.text,
-      );
+      final email = emailController.text.trim();
+      final password = passwordController.text;
 
-      // TODO: Implement actual API call
-      await Future.delayed(const Duration(seconds: 2)); // Simulate API call
+      // Call real API
+      final result = await AuthRepository().signIn(email, password);
 
-      // Mock successful response
-      final mockUser = User(
-        id: '1',
-        email: loginRequest.email,
-        name: 'John Doe',
-      );
+      if (result['success'] == true) {
+        // Save token and credentials
+        _saveToken(result['token']);
+        _saveCredentials();
+        
+        // Create user from API response
+        final userData = result['user'] ?? result['data'];
+        currentUser.value = User(
+          id: userData['id']?.toString() ?? '1',
+          email: userData['email'] ?? email,
+          name: userData['name'] ?? 'User',
+        );
+        
+        Get.snackbar(
+          'Success',
+          result['message'] ?? 'Login successful!',
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
+        );
 
-      currentUser.value = mockUser;
-      
-      Get.snackbar(
-        'Success',
-        'Login successful!',
-        backgroundColor: Colors.green,
-        colorText: Colors.white,
-      );
-
-      // Navigate to OTP verification
-      Get.toNamed(Routes.otp);
+        // Navigate directly to home page
+        Get.offAllNamed(Routes.home);
+      } else {
+        // API returned error
+        Get.snackbar(
+          'Error',
+          result['error'] ?? 'Login failed',
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+        );
+      }
 
     } catch (e) {
       Get.snackbar(
@@ -141,6 +192,20 @@ class SignInController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    _loadSavedCredentials();
+  }
+
+  @override
+  void onReady() {
+    super.onReady();
+    
+    // Check if user is already logged in and on login screen
+    if (isLoggedIn() && Get.currentRoute == '/login') {
+      // Auto-redirect to home if already logged in
+      Future.delayed(const Duration(milliseconds: 500), () {
+        Get.offAllNamed(Routes.home);
+      });
+    }
   }
 
   @override

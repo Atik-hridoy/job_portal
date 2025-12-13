@@ -4,5 +4,6 @@ class Routes {
   static const login = '/login';
   static const signup = '/signup';
   static const otp = '/otp';
+  static const otpSuccess = '/otp-success';
   static const home = '/home';
 }

@@ -4,11 +4,15 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:job_portal/routes/app_pages.dart';
 import 'package:job_portal/routes/app_routers.dart';
 import 'core/utils/theme.dart';
+import 'core/services/dio_service.dart';
+import 'core/services/storage_service.dart';
 
 
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await StorageService.init(); // Initialize storage
+  DioService.init(); // Initialize API logging
   runApp(const JobPortalApp());
 }
 

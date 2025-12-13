@@ -26,7 +26,7 @@ class AppLogger {
     debugPrint(color('───────────── API RESPONSE ─────────────'));
     debugPrint(color('URL    : $url'));
     debugPrint(color('STATUS : $statusCode'));
-    debugPrint(color('BODY   : ${jsonEncode(data)}'));
+    debugPrint(color('BODY   : ${const JsonEncoder.withIndent('  ').convert(data)}'));
     debugPrint(color('──────────────────────────────────────────'));
   }
 

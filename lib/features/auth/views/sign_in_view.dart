@@ -35,7 +35,28 @@ class SignInView extends GetView<SignInController> {
               isPasswordVisible: controller.isPasswordVisible.value,
               onToggleVisibility: controller.togglePasswordVisibility,
             )),
-            SizedBox(height: 24.h),
+            SizedBox(height: 16.h),
+
+            // Remember Me checkbox
+            Obx(() => Row(
+              children: [
+                Checkbox(
+                  value: controller.rememberMe.value,
+                  onChanged: (value) {
+                    controller.rememberMe.value = value ?? false;
+                  },
+                  activeColor: const Color(0xFF6B73FF),
+                ),
+                Text(
+                  'Remember me',
+                  style: TextStyle(
+                    fontSize: 14.sp,
+                    color: Colors.grey.shade700,
+                  ),
+                ),
+              ],
+            )),
+            SizedBox(height: 16.h),
 
             // Sign In button
             Obx(() => CustomButton(

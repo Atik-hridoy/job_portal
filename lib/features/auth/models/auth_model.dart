@@ -20,11 +20,13 @@ class SignUpRequest {
   final String password;
   final String phone;
   final String? name;
+  final String userType;
 
   SignUpRequest({
     required this.email,
     required this.password,
     required this.phone,
+    required this.userType,
     this.name,
   });
 
@@ -33,6 +35,7 @@ class SignUpRequest {
       'email': email,
       'password': password,
       'phone': phone,
+      'user_type': userType,
       if (name != null) 'name': name,
     };
   }

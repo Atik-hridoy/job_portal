@@ -38,6 +38,54 @@ class SignUpView extends GetView<SignUpController> {
               )),
               SizedBox(height: 16.h),
 
+              // User type dropdown
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  'Who are you?',
+                  style: TextStyle(
+                    fontSize: 14.sp,
+                    fontWeight: FontWeight.w600,
+                    color: const Color(0xFF273056),
+                  ),
+                ),
+              ),
+              SizedBox(height: 8.h),
+              Obx(() => DropdownButtonFormField<String>(
+                    value: controller.selectedUserType.value,
+                    items: controller.userTypes
+                        .map(
+                          (type) => DropdownMenuItem(
+                            value: type,
+                            child: Text(type),
+                          ),
+                        )
+                        .toList(),
+                    onChanged: controller.setUserType,
+                    decoration: InputDecoration(
+                      contentPadding: EdgeInsets.symmetric(
+                        horizontal: 16.w,
+                        vertical: 14.h,
+                      ),
+                      filled: true,
+                      fillColor: Colors.white,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(16.r),
+                        borderSide: BorderSide(
+                          color: Colors.grey.shade300,
+                        ),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(16.r),
+                        borderSide: BorderSide(
+                          color: Colors.grey.shade300,
+                        ),
+                      ),
+                    ),
+                    icon: const Icon(Icons.arrow_drop_down_rounded),
+                  )),
+              SizedBox(height: 16.h),
+
               // Phone field
               CustomTextField(
                 controller: controller.phoneController,

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../models/auth_model.dart';
+import '../../../../core/repositories/auth_repository.dart';
 import 'package:job_portal/routes/app_routers.dart';
 
 class SignUpController extends GetxController {
@@ -16,10 +16,18 @@ class SignUpController extends GetxController {
   // Observable states
   final RxBool isLoading = false.obs;
   final RxBool isPasswordVisible = false.obs;
+  final RxString selectedUserType = 'Job Seeker'.obs;
+
+  final List<String> userTypes = const ['Hirer', 'Job Seeker'];
 
   // Toggle password visibility
   void togglePasswordVisibility() {
     isPasswordVisible.value = !isPasswordVisible.value;
+  }
+
+  void setUserType(String? value) {
+    if (value == null) return;
+    selectedUserType.value = value;
   }
 
   // Sign up function
@@ -27,29 +35,33 @@ class SignUpController extends GetxController {
     try {
       isLoading.value = true;
 
-      final signUpRequest = SignUpRequest(
-        email: emailController.text.trim(),
-        password: passwordController.text,
-        phone: phoneController.text.trim(),
-        name: nameController.text.trim().isEmpty 
-            ? null 
-            : nameController.text.trim(),
-      );
+      final email = emailController.text.trim();
+      final password = passwordController.text;
+      final phone = phoneController.text.trim();
+      final role = selectedUserType.value.toLowerCase() == 'job seeker' ? 'job_seeker' : 'hirer';
 
-      // TODO: Implement actual API call
-      // Use signUpRequest for API call when implemented
-      print('Sign up request: ${signUpRequest.toJson()}');
-      await Future.delayed(const Duration(seconds: 2)); // Simulate API call
+      // Call real API
+      final result = await AuthRepository().signUp(email, password, role, phone);
 
-      Get.snackbar(
-        'Success',
-        'Account created successfully!',
-        backgroundColor: Colors.green,
-        colorText: Colors.white,
-      );
+      if (result['success'] == true) {
+        Get.snackbar(
+          'Success',
+          result['message'] ?? 'Account created successfully!',
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
+        );
 
-      // Navigate to OTP verification
-      Get.toNamed(Routes.otp);
+        // Navigate to OTP verification with email
+        Get.toNamed(Routes.otp, arguments: {'email': email});
+      } else {
+        // API returned error
+        Get.snackbar(
+          'Error',
+          result['error'] ?? 'Sign up failed',
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+        );
+      }
 
     } catch (e) {
       Get.snackbar(

@@ -92,8 +92,8 @@ class SignInController extends GetxController {
           colorText: Colors.white,
         );
 
-        // Navigate directly to home page
-        Get.offAllNamed(Routes.home);
+        // Navigate to get started page
+        Get.offAllNamed(Routes.getStarted);
       } else {
         // API returned error
         Get.snackbar(
@@ -203,7 +203,7 @@ class SignInController extends GetxController {
     if (isLoggedIn() && Get.currentRoute == '/login') {
       // Auto-redirect to home if already logged in
       Future.delayed(const Duration(milliseconds: 500), () {
-        Get.offAllNamed(Routes.home);
+        Get.offAllNamed(Routes.getStarted);
       });
     }
   }

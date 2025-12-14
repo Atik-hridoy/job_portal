@@ -109,7 +109,7 @@ class OtpController extends GetxController {
           backgroundColor: Colors.green,
           colorText: Colors.white,
         );
-        Get.offAllNamed(Routes.home);
+        Get.toNamed(Routes.otpSuccess);
       } else {
         // API returned error
         Get.snackbar(

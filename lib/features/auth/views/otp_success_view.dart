@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:job_portal/routes/app_routers.dart';
 
 class OtpSuccessView extends StatefulWidget {
   const OtpSuccessView({super.key});
@@ -174,8 +175,7 @@ class _OtpSuccessViewState extends State<OtpSuccessView>
                       ),
                     ),
                     onPressed: () {
-                      // TODO: Navigate to home/dashboard when available.
-                      Get.back();
+                      Get.offAllNamed(Routes.getStarted);
                     },
                     child: Text(
                       'Continue',

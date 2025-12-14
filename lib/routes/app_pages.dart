@@ -10,6 +10,7 @@ import 'package:job_portal/features/auth/views/otp_success_view.dart';
 import 'package:job_portal/features/auth/bindings/auth_binding.dart';
 import 'package:job_portal/features/home/views/home_view.dart';
 import 'package:job_portal/features/home/bindings/home_binding.dart';
+import 'package:job_portal/features/get_started/views/get_start_view.dart';
 import 'package:job_portal/routes/app_routers.dart';
 
 class AppPages {
@@ -25,6 +26,12 @@ class AppPages {
       name: Routes.onboarding,
       page: () => const OnboardingView(),
       binding: OnboardingBinding(),
+      transition: Transition.rightToLeft,
+      transitionDuration: const Duration(milliseconds: 300),
+    ),
+    GetPage(
+      name: Routes.getStarted,
+      page: () => const GetStartView(),
       transition: Transition.rightToLeft,
       transitionDuration: const Duration(milliseconds: 300),
     ),

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:job_portal/routes/app_routers.dart';
 import '../controllers/get_started_controller.dart';
 import '../widgets/company_chip_widget.dart';
 import '../widgets/animated_shine_button.dart';
+import '../../profile/views/profile_setup_view.dart';
 
 class GetStartView extends GetView<GetStartedController> {
-  const GetStartView({Key? key}) : super(key: key);
+  const GetStartView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -124,7 +124,12 @@ class GetStartView extends GetView<GetStartedController> {
               const SizedBox(height: 20),
               AnimatedShineButton(
                 onPressed: () {
-                  Get.offAllNamed(Routes.home);
+                  showModalBottomSheet(
+                    context: context,
+                    isScrollControlled: true,
+                    backgroundColor: Colors.transparent,
+                    builder: (context) => const ProfileSetupView(),
+                  );
                 },
               ),
               const SizedBox(height: 20),

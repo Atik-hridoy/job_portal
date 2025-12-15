@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class JobDetailsView extends StatelessWidget {
-  const JobDetailsView({Key? key}) : super(key: key);
+  const JobDetailsView({super.key});
 
   @override
   Widget build(BuildContext context) {

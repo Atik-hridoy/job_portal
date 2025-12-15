@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-import '../lib/features/home/views/location/location_view.dart';
+import 'package:job_portal/features/home/views/location/location_view.dart';
 
 void main() {
   group('LocationViewPage Widget Tests', () {

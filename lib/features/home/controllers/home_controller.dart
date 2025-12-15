@@ -85,9 +85,4 @@ class HomeController extends GetxController {
     selectedCategory.value = category;
   }
   
-  @override
-  void onInit() {
-    super.onInit();
-    // Initialize any data fetching here
-  }
 }

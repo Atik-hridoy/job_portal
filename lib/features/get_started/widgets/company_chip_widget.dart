@@ -6,11 +6,11 @@ class CompanyChipWidget extends StatefulWidget {
   final String? logoUrl;
 
   const CompanyChipWidget({
-    Key? key,
+    super.key,
     required this.name,
     required this.color,
     this.logoUrl,
-  }) : super(key: key);
+  });
 
   @override
   State<CompanyChipWidget> createState() => _CompanyChipWidgetState();

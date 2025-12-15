@@ -4,7 +4,7 @@ class InfoPillWidget extends StatelessWidget {
   final IconData icon;
   final String label;
 
-  const InfoPillWidget(this.icon, this.label, {Key? key}) : super(key: key);
+  const InfoPillWidget(this.icon, this.label, {super.key});
 
   @override
   Widget build(BuildContext context) {

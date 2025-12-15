@@ -31,7 +31,7 @@ class AuthBackground extends StatelessWidget {
               // Top decorative area with optional back button
               Expanded(
                 flex: 2,
-                child: Container(
+                child: SizedBox(
                   width: double.infinity,
                   child: Stack(
                     children: [

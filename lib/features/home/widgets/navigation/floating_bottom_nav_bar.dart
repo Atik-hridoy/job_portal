@@ -5,10 +5,10 @@ class FloatingBottomNavBar extends StatefulWidget {
   final Function(int) onTap;
 
   const FloatingBottomNavBar({
-    Key? key,
+    super.key,
     required this.currentIndex,
     required this.onTap,
-  }) : super(key: key);
+  });
 
   @override
   State<FloatingBottomNavBar> createState() => _FloatingBottomNavBarState();

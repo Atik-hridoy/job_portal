@@ -7,10 +7,6 @@ class OnboardingController extends GetxController {
   final RxInt currentPageIndex = 0.obs;
   final List<OnboardingModel> onboardingPages = OnboardingModel.getOnboardingPages();
 
-  @override
-  void onInit() {
-    super.onInit();
-  }
 
   @override
   void onClose() {

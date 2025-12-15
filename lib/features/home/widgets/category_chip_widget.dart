@@ -16,8 +16,8 @@ import 'package:flutter/material.dart';
     this.isSelected = false,
     this.onTap,
     this.icon,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   State<CategoryChipWidget> createState() => _CategoryChipWidgetState();

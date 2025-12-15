@@ -16,7 +16,7 @@ class JobCardWidget extends StatelessWidget {
   final VoidCallback? onTap;
 
   const JobCardWidget({
-    Key? key,
+    super.key,
     required this.title,
     required this.company,
     required this.logo,
@@ -29,7 +29,7 @@ class JobCardWidget extends StatelessWidget {
     required this.postedTime,
     required this.backgroundColor,
     this.onTap,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

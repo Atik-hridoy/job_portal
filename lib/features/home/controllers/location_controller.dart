@@ -8,7 +8,7 @@ class LocationController extends ChangeNotifier {
   Position? _currentPosition;
   String _currentAddress = 'Fetching location...';
   bool _isLoading = true;
-  Set<Marker> _markers = {};
+  final Set<Marker> _markers = {};
   
   // Default location (Dhaka, Bangladesh)
   static const LatLng _defaultLocation = LatLng(23.8103, 90.4125);

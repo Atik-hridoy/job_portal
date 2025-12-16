@@ -1,11 +1,19 @@
 import 'package:flutter/material.dart';
-import 'profile_setup_view.dart';
+import 'edit_profile_view.dart';
+import '../controllers/profile_controller.dart';
+import '../widgets/project_card.dart';
+import '../widgets/add_project_dialog.dart';
+import '../widgets/certificate_card.dart';
+import '../widgets/add_certificate_dialog.dart';
+import '../widgets/cv_upload_widget.dart';
 
 class ProfileView extends StatelessWidget {
   const ProfileView({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final controller = ProfileController();
+    
     return Scaffold(
       backgroundColor: const Color(0xFF1C1C1E),
       body: CustomScrollView(
@@ -23,11 +31,11 @@ class ProfileView extends StatelessWidget {
             actions: [
               IconButton(
                 icon: const Icon(Icons.share, color: Colors.white),
-                onPressed: () {},
+                onPressed: () => controller.shareProfile(),
               ),
               IconButton(
                 icon: const Icon(Icons.more_vert, color: Colors.white),
-                onPressed: () {},
+                onPressed: () => controller.showMoreOptions(context),
               ),
             ],
             flexibleSpace: FlexibleSpaceBar(
@@ -159,23 +167,13 @@ class ProfileView extends StatelessWidget {
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton.icon(
-                      onPressed: () async {
-                        final result = await Navigator.push(
+                      onPressed: () {
+                        Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const ProfileSetupView(),
+                            builder: (context) => const EditProfileView(),
                           ),
                         );
-                        
-                        if (result == true) {
-                          // Profile was completed successfully
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Profile completed successfully!'),
-                              backgroundColor: Color(0xFF4DB8AC),
-                            ),
-                          );
-                        }
                       },
                       icon: const Icon(Icons.edit),
                       label: const Text(
@@ -213,6 +211,14 @@ class ProfileView extends StatelessWidget {
                         height: 1.6,
                       ),
                     ),
+                  ),
+
+                  const SizedBox(height: 24),
+
+                  // CV Display Section
+                  CVUploadWidget(
+                    cvFilePath: 'mock_cv_path.pdf', // Mock data - uploaded CV
+                    onUploadCV: null, // No upload action in display mode
                   ),
 
                   const SizedBox(height: 24),
@@ -344,6 +350,174 @@ class ProfileView extends StatelessWidget {
                     ),
                   ),
 
+                  const SizedBox(height: 24),
+
+                  // Projects Section
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      _SectionHeader(
+                        icon: Icons.work_outline,
+                        title: 'Projects',
+                      ),
+                      GestureDetector(
+                        onTap: () => _showAddProjectDialog(context),
+                        child: Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFF5E7CE2).withOpacity(0.2),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: const Icon(
+                            Icons.add,
+                            color: Color(0xFF5E7CE2),
+                            size: 20,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  _ContentCard(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Swipe to see more projects',
+                          style: TextStyle(
+                            color: Colors.white54,
+                            fontSize: 12,
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        SizedBox(
+                          height: 200, // Fixed height for horizontal cards
+                          child: ListView(
+                            scrollDirection: Axis.horizontal,
+                            padding: EdgeInsets.zero,
+                            physics: const BouncingScrollPhysics(
+                              parent: AlwaysScrollableScrollPhysics(),
+                            ),
+                            children: [
+                              ProjectCard(
+                                title: 'E-commerce Mobile App',
+                                description: 'Designed and developed a complete e-commerce solution with modern UI/UX patterns and seamless user experience.',
+                                technologies: ['Flutter', 'Firebase', 'Stripe'],
+                                status: 'Completed',
+                                color: const Color(0xFF5E7CE2),
+                              ),
+                              ProjectCard(
+                                title: 'Task Management System',
+                                description: 'Built a comprehensive task management application with real-time collaboration features and team analytics.',
+                                technologies: ['React', 'Node.js', 'MongoDB'],
+                                status: 'In Progress',
+                                color: const Color(0xFF4DB8AC),
+                              ),
+                              ProjectCard(
+                                title: 'Social Media Dashboard',
+                                description: 'Created an analytics dashboard for social media management with advanced data visualization and reporting.',
+                                technologies: ['Python', 'Django', 'PostgreSQL'],
+                                status: 'Completed',
+                                color: const Color(0xFFE25E7C),
+                              ),
+                              ProjectCard(
+                                title: 'AI Chat Application',
+                                description: 'Developed an intelligent chat application with natural language processing and machine learning capabilities.',
+                                technologies: ['TensorFlow', 'Flutter', 'WebSocket'],
+                                status: 'In Progress',
+                                color: const Color(0xFFC77DD1),
+                              ),
+                              ProjectCard(
+                                title: 'Fitness Tracker App',
+                                description: 'Created a comprehensive fitness tracking application with health monitoring and workout planning features.',
+                                technologies: ['React Native', 'Firebase', 'HealthKit'],
+                                status: 'Completed',
+                                color: const Color(0xFF8B9A7C),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  const SizedBox(height: 24),
+
+                  // Certificates Section
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      _SectionHeader(
+                        icon: Icons.verified,
+                        title: 'Certificates',
+                      ),
+                      GestureDetector(
+                        onTap: () => _showAddCertificateDialog(context),
+                        child: Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFF4DB8AC).withValues(alpha: 0.2),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: const Icon(
+                            Icons.add,
+                            color: Color(0xFF4DB8AC),
+                            size: 20,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  _ContentCard(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Swipe to see more certificates',
+                          style: TextStyle(
+                            color: Colors.white54,
+                            fontSize: 12,
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        SizedBox(
+                          height: 200, // Fixed height for horizontal cards
+                          child: ListView(
+                            scrollDirection: Axis.horizontal,
+                            padding: EdgeInsets.zero,
+                            physics: const BouncingScrollPhysics(
+                              parent: AlwaysScrollableScrollPhysics(),
+                            ),
+                            children: [
+                              CertificateCard(
+                                title: 'Flutter Development',
+                                issuer: 'Google',
+                                date: 'March 2024',
+                                credentialId: 'GCP-FLUTTER-2024',
+                                color: const Color(0xFF4DB8AC),
+                              ),
+                              CertificateCard(
+                                title: 'React Native Specialist',
+                                issuer: 'Meta',
+                                date: 'February 2024',
+                                credentialId: 'META-RN-2024',
+                                color: const Color(0xFF5E7CE2),
+                              ),
+                              CertificateCard(
+                                title: 'UI/UX Design',
+                                issuer: 'Adobe',
+                                date: 'January 2024',
+                                credentialId: 'ADOBE-UIUX-2024',
+                                color: const Color(0xFFE25E7C),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
                   const SizedBox(height: 40),
                 ],
               ),
@@ -351,6 +525,20 @@ class ProfileView extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+
+  void _showAddProjectDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => const AddProjectDialog(),
+    );
+  }
+
+  void _showAddCertificateDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => const AddCertificateDialog(),
     );
   }
 }

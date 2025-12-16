@@ -4,6 +4,7 @@ import '../widgets/custom_text_field.dart';
 import '../widgets/skill_chip.dart';
 import '../widgets/image_picker_option.dart';
 import '../widgets/section_title.dart';
+import '../widgets/cv_upload_widget.dart';
 
 class EditProfileView extends StatefulWidget {
   const EditProfileView({super.key});
@@ -24,6 +25,63 @@ class _EditProfileViewState extends State<EditProfileView> {
   void dispose() {
     _controller.dispose();
     super.dispose();
+  }
+
+  void _showCVUploadOptions(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: const Color(0xFF2C2C2E),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) => SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.3),
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+              const SizedBox(height: 20),
+              const Text(
+                'Upload CV/Resume',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 20),
+              ListTile(
+                leading: const Icon(Icons.file_upload, color: Color(0xFFE25E7C)),
+                title: const Text('Choose from Files', style: TextStyle(color: Colors.white)),
+                subtitle: const Text('Select PDF, DOC, or DOCX file', style: TextStyle(color: Colors.white54)),
+                onTap: () {
+                  Navigator.pop(context);
+                  // TODO: File picker functionality
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.camera_alt, color: Color(0xFFE25E7C)),
+                title: const Text('Scan Document', style: TextStyle(color: Colors.white)),
+                subtitle: const Text('Take a photo of your CV', style: TextStyle(color: Colors.white54)),
+                onTap: () {
+                  Navigator.pop(context);
+                  // TODO: Camera functionality
+                },
+              ),
+              const SizedBox(height: 20),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   void _showImagePickerOptions() {
@@ -328,6 +386,16 @@ class _EditProfileViewState extends State<EditProfileView> {
                   icon: Icons.description_outlined,
                   maxLines: 5,
                   validator: _controller.validateAbout,
+                ),
+
+                const SizedBox(height: 32),
+
+                const SectionTitle('Resume/CV'),
+                const SizedBox(height: 16),
+
+                CVUploadWidget(
+                  cvFilePath: null, // TODO: Get actual CV file path from controller
+                  onUploadCV: () => _showCVUploadOptions(context),
                 ),
 
                 const SizedBox(height: 32),

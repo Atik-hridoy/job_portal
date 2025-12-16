@@ -236,6 +236,32 @@ class _ProfileSetupViewState extends State<ProfileSetupView> {
                     
                     const SizedBox(height: 20),
                     
+                    // Phone Number Field
+                    TextFormField(
+                      controller: TextEditingController(),
+                      style: const TextStyle(color: Colors.white),
+                      keyboardType: TextInputType.phone,
+                      decoration: InputDecoration(
+                        labelText: 'Phone Number',
+                        labelStyle: TextStyle(color: Colors.white.withValues(alpha: 0.7)),
+                        filled: true,
+                        fillColor: const Color(0xFF2C2C2E),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide.none,
+                        ),
+                        prefixIcon: const Icon(Icons.phone, color: Color(0xFF5E7CE2)),
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter your phone number';
+                        }
+                        return null;
+                      },
+                    ),
+                    
+                    const SizedBox(height: 20),
+                    
                     // Bio Field
                     TextFormField(
                       controller: _bioController,

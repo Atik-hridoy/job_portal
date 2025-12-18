@@ -12,126 +12,100 @@ class MessageBubble extends StatelessWidget {
     required this.message,
     required this.time,
     required this.isMe,
-    this.isRead = true,
+    required this.isRead,
     this.senderName,
   });
 
   @override
   Widget build(BuildContext context) {
+    final bubbleAlignment = isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start;
+    final bubbleColor = isMe ? const Color(0xFF0084FF) : Colors.white;
+    final textColor = isMe ? Colors.white : Colors.black87;
+    final borderRadius = isMe
+        ? const BorderRadius.only(
+            topLeft: Radius.circular(18),
+            topRight: Radius.circular(18),
+            bottomLeft: Radius.circular(18),
+          )
+        : const BorderRadius.only(
+            topLeft: Radius.circular(18),
+            topRight: Radius.circular(18),
+            bottomRight: Radius.circular(18),
+          );
+
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-      child: Row(
-        mainAxisAlignment: isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.end,
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+      child: Column(
+        crossAxisAlignment: bubbleAlignment,
         children: [
-          if (!isMe) ...[
-            // Sender avatar
-            Container(
-              width: 32,
-              height: 32,
-              margin: const EdgeInsets.only(right: 8),
-              decoration: BoxDecoration(
-                color: Colors.grey[300],
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: const Icon(
-                Icons.person,
-                color: Colors.white,
-                size: 18,
+          if (!isMe && senderName != null)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 6),
+              child: Text(
+                senderName!,
+                style: const TextStyle(
+                  color: Colors.black54,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
             ),
-          ],
-          Flexible(
+          Container(
+            constraints: BoxConstraints(
+              maxWidth: MediaQuery.of(context).size.width * 0.7,
+            ),
+            decoration: BoxDecoration(
+              color: bubbleColor,
+              borderRadius: borderRadius,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.05),
+                  blurRadius: 8,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             child: Column(
-              crossAxisAlignment: isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+              crossAxisAlignment: bubbleAlignment,
               children: [
-                if (!isMe && senderName != null)
-                  Padding(
-                    padding: const EdgeInsets.only(left: 8, bottom: 2),
-                    child: Text(
-                      senderName!,
+                Text(
+                  message,
+                  style: TextStyle(
+                    color: textColor,
+                    fontSize: 15,
+                    height: 1.4,
+                  ),
+                ),
+                const SizedBox(height: 6),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment:
+                      isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
+                  children: [
+                    Text(
+                      time,
                       style: TextStyle(
-                        color: Colors.grey[600],
-                        fontSize: 12,
-                        fontWeight: FontWeight.w500,
+                        color: textColor.withOpacity(0.7),
+                        fontSize: 11,
                       ),
                     ),
-                  ),
-                Container(
-                  constraints: BoxConstraints(
-                    maxWidth: MediaQuery.of(context).size.width * 0.75,
-                  ),
-                  margin: EdgeInsets.only(
-                    left: isMe ? 0 : 8,
-                    right: isMe ? 8 : 0,
-                  ),
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                  decoration: BoxDecoration(
-                    color: isMe ? const Color(0xFF0084FF) : const Color(0xFFE4E6EB),
-                    borderRadius: BorderRadius.circular(20),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.05),
-                        blurRadius: 5,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        message,
-                        style: TextStyle(
-                          color: isMe ? Colors.white : Colors.black87,
-                          fontSize: 16,
-                          height: 1.4,
+                    if (isMe)
+                      Padding(
+                        padding: const EdgeInsets.only(left: 6),
+                        child: Icon(
+                          isRead ? Icons.done_all : Icons.check,
+                          size: 14,
+                          color: isRead
+                              ? Colors.lightBlue.shade100
+                              : textColor.withOpacity(0.7),
                         ),
                       ),
-                      const SizedBox(height: 4),
-                      Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            time,
-                            style: TextStyle(
-                              color: isMe 
-                                  ? Colors.white.withOpacity(0.7)
-                                  : Colors.grey[500],
-                              fontSize: 11,
-                            ),
-                          ),
-                          if (isMe) ...[
-                            const SizedBox(width: 4),
-                            Icon(
-                              isRead ? Icons.done_all : Icons.done,
-                              color: isRead ? Colors.white70 : Colors.white38,
-                              size: 16,
-                            ),
-                          ],
-                        ],
-                      ),
-                    ],
-                  ),
+                  ],
                 ),
               ],
             ),
           ),
-          if (isMe) ...[
-            // Read receipt indicator
-            Container(
-              width: 32,
-              height: 32,
-              margin: const EdgeInsets.only(left: 8),
-              decoration: BoxDecoration(
-                color: isRead ? Colors.blue : Colors.grey,
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: isRead 
-                  ? const Icon(Icons.done_all, color: Colors.white, size: 18)
-                  : const Icon(Icons.done, color: Colors.white, size: 18),
-            ),
-          ],
         ],
       ),
     );

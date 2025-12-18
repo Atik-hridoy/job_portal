@@ -5,6 +5,9 @@ import '../widgets/category_chip_widget.dart';
 import 'location/location_view.dart';
 import '../../profile/views/profile_view.dart';
 import '../../messaging/views/chat_list_view.dart';
+import '../../errors/views/error_gallery_view.dart';
+import '../../posts/views/post_feed_view.dart';
+import '../../search/views/job_search_view.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -30,6 +33,20 @@ class _HomeViewState extends State<HomeView> {
           });
         },
       ),
+      floatingActionButton: _currentIndex == 0
+          ? FloatingActionButton.extended(
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => const ErrorGalleryView(),
+                  ),
+                );
+              },
+              backgroundColor: const Color(0xFF5E7CE2),
+              icon: const Icon(Icons.error_outline_rounded),
+              label: const Text('Error screens'),
+            )
+          : null,
     );
   }
 
@@ -40,8 +57,10 @@ class _HomeViewState extends State<HomeView> {
       case 1:
         return _buildSearchView();
       case 2:
-        return _buildMessageView();
+        return _buildPostView();
       case 3:
+        return _buildMessageView();
+      case 4:
         return _buildProfileView();
       default:
         return _buildHomeView();
@@ -135,6 +154,8 @@ class _HomeViewState extends State<HomeView> {
                   ),
                   SizedBox(height: screenHeight * 0.03),
                   Container(
+                    height: 70,
+                    margin: const EdgeInsets.all(20),
                     decoration: BoxDecoration(
                       color: const Color(0xFF2C2C2E),
                       borderRadius: BorderRadius.circular(12),
@@ -262,23 +283,18 @@ class _HomeViewState extends State<HomeView> {
   }
 
   Widget _buildSearchView() {
-    return const SafeArea(
-      child: Center(
-        child: Text(
-          'Search View',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      ),
-    );
+    return const JobSearchView();
   }
 
   Widget _buildMessageView() {
     return const SafeArea(
-      child: ChatListView(),
+      child: MessageListView(),
+    );
+  }
+
+  Widget _buildPostView() {
+    return SafeArea(
+      child: PostFeedView(),
     );
   }
 

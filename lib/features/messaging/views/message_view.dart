@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+
+import '../controllers/messaging_controller.dart';
+import '../model/chat_message_model.dart';
 import '../widgets/message_bubble.dart';
 import '../widgets/message_input.dart';
 
@@ -11,65 +15,33 @@ class MessageView extends StatefulWidget {
 
 class _MessageViewState extends State<MessageView> {
   final ScrollController _scrollController = ScrollController();
-  final List<Map<String, dynamic>> _messages = [
-    {
-      'message': 'Hey! How are you doing today?',
-      'time': '10:30 AM',
-      'isMe': false,
-      'senderName': 'John Doe',
-      'isRead': true,
-    },
-    {
-      'message': 'Hi John! I\'m doing great, thanks for asking! Just working on some new designs.',
-      'time': '10:32 AM',
-      'isMe': true,
-      'isRead': true,
-    },
-    {
-      'message': 'That sounds awesome! I\'d love to see what you\'re working on.',
-      'time': '10:35 AM',
-      'isMe': false,
-      'senderName': 'John Doe',
-      'isRead': true,
-    },
-    {
-      'message': 'Sure! I can share some screenshots later today. Are you free for a quick call?',
-      'time': '10:38 AM',
-      'isMe': true,
-      'isRead': true,
-    },
-    {
-      'message': 'Yes, definitely! How about 2 PM?',
-      'time': '10:40 AM',
-      'isMe': false,
-      'senderName': 'John Doe',
-      'isRead': true,
-    },
-    {
-      'message': 'Perfect! Talk to you then 🎉',
-      'time': '10:42 AM',
-      'isMe': true,
-      'isRead': true,
-    },
-  ];
+  late final MessagingController _messagingController;
+  late final Worker _conversationListener;
 
-  bool _isTyping = false;
+  @override
+  void initState() {
+    super.initState();
+    _messagingController = Get.isRegistered<MessagingController>()
+        ? Get.find<MessagingController>()
+        : Get.put(MessagingController());
+
+    WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom());
+
+    _conversationListener = ever<List<ChatMessage>>(
+      _messagingController.conversationMessages,
+      (_) => _scrollToBottom(),
+    );
+  }
 
   @override
   void dispose() {
     _scrollController.dispose();
+    _conversationListener.dispose();
     super.dispose();
   }
 
   void _sendMessage(String message) {
-    setState(() {
-      _messages.add({
-        'message': message,
-        'time': DateTime.now().toString().substring(11, 16),
-        'isMe': true,
-        'isRead': false,
-      });
-    });
+    _messagingController.sendMessage(message);
     _scrollToBottom();
   }
 
@@ -113,7 +85,7 @@ class _MessageViewState extends State<MessageView> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Text(
+                  Text(
                     'John Doe',
                     style: TextStyle(
                       color: Colors.white,
@@ -121,7 +93,6 @@ class _MessageViewState extends State<MessageView> {
                       fontWeight: FontWeight.w600,
                     ),
                   ),
-                  
                 ],
               ),
             ),
@@ -146,7 +117,7 @@ class _MessageViewState extends State<MessageView> {
                   child: Row(
                     children: [
                       Icon(Icons.person, color: Colors.black87),
-                      const SizedBox(width: 12),
+                      SizedBox(width: 12),
                       Text('View Profile'),
                     ],
                   ),
@@ -156,7 +127,7 @@ class _MessageViewState extends State<MessageView> {
                   child: Row(
                     children: [
                       Icon(Icons.search, color: Colors.black87),
-                      const SizedBox(width: 12),
+                      SizedBox(width: 12),
                       Text('Search in Conversation'),
                     ],
                   ),
@@ -166,7 +137,7 @@ class _MessageViewState extends State<MessageView> {
                   child: Row(
                     children: [
                       Icon(Icons.volume_off, color: Colors.black87),
-                      const SizedBox(width: 12),
+                      SizedBox(width: 12),
                       Text('Mute Notifications'),
                     ],
                   ),
@@ -197,25 +168,33 @@ class _MessageViewState extends State<MessageView> {
           ),
           // Messages list
           Expanded(
-            child: ListView.builder(
-              controller: _scrollController,
-              padding: const EdgeInsets.symmetric(vertical: 8),
-              itemCount: _messages.length,
-              itemBuilder: (context, index) {
-                final message = _messages[index];
-                return MessageBubble(
-                  message: message['message'],
-                  time: message['time'],
-                  isMe: message['isMe'],
-                  isRead: message['isRead'],
-                  senderName: message['senderName'],
-                );
-              },
-            ),
+            child: Obx(() {
+              final RxList<ChatMessage> messages =
+                  _messagingController.conversationMessages;
+              return ListView.builder(
+                controller: _scrollController,
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                itemCount: messages.length,
+                itemBuilder: (context, index) {
+                  final ChatMessage message = messages[index];
+                  return MessageBubble(
+                    message: message.message,
+                    time: message.time,
+                    isMe: message.isMe,
+                    isRead: message.isRead,
+                    senderName: message.senderName,
+                  );
+                },
+              );
+            }),
           ),
           // Typing indicator
-          if (_isTyping)
-            Container(
+          Obx(() {
+            if (!_messagingController.isTyping.value) {
+              return const SizedBox.shrink();
+            }
+
+            return Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               child: Row(
                 children: [
@@ -234,7 +213,8 @@ class _MessageViewState extends State<MessageView> {
                   ),
                   const SizedBox(width: 8),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(18),
@@ -252,7 +232,8 @@ class _MessageViewState extends State<MessageView> {
                   ),
                 ],
               ),
-            ),
+            );
+          }),
         ],
       ),
       bottomNavigationBar: MessageInput(

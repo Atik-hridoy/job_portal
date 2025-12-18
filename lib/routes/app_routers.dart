@@ -8,4 +8,8 @@ class Routes {
   static const otpSuccess = '/otp-success';
   static const home = '/home';
   static const messages = '/messages';
+  static const errorNotFound = '/error/not-found';
+  static const errorNoConnection = '/error/no-connection';
+  static const errorServer = '/error/server';
+  static const errorGallery = '/error/gallery';
 }

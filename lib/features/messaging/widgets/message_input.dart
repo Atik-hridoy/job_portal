@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 
 class MessageInput extends StatefulWidget {
-  final Function(String) onSendMessage;
-  final VoidCallback? onAttachFile;
-  final VoidCallback? onAttachImage;
+  final ValueChanged<String> onSendMessage;
+  final VoidCallback onAttachImage;
+  final VoidCallback onAttachFile;
 
   const MessageInput({
     super.key,
     required this.onSendMessage,
-    this.onAttachFile,
-    this.onAttachImage,
+    required this.onAttachImage,
+    required this.onAttachFile,
   });
 
   @override
@@ -18,7 +18,6 @@ class MessageInput extends StatefulWidget {
 
 class _MessageInputState extends State<MessageInput> {
   final TextEditingController _controller = TextEditingController();
-  bool _isTyping = false;
 
   @override
   void dispose() {
@@ -26,124 +25,64 @@ class _MessageInputState extends State<MessageInput> {
     super.dispose();
   }
 
-  void _sendMessage() {
-    if (_controller.text.trim().isNotEmpty) {
-      widget.onSendMessage(_controller.text.trim());
-      _controller.clear();
-      setState(() {
-        _isTyping = false;
-      });
-    }
+  void _handleSend() {
+    final text = _controller.text.trim();
+    if (text.isEmpty) return;
+    widget.onSendMessage(text);
+    _controller.clear();
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border(
-          top: BorderSide(
-            color: Colors.grey[300]!,
-            width: 1,
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      color: Colors.white,
+      child: Row(
+        children: [
+          IconButton(
+            onPressed: widget.onAttachImage,
+            icon: const Icon(Icons.image, color: Color(0xFF0084FF)),
           ),
-        ),
-      ),
-      child: SafeArea(
-        child: Row(
-          children: [
-            // Left side actions
-            Row(
-              children: [
-                IconButton(
-                  onPressed: widget.onAttachImage,
-                  icon: Icon(
-                    Icons.image,
-                    color: Colors.grey[600],
-                    size: 24,
-                  ),
+          IconButton(
+            onPressed: widget.onAttachFile,
+            icon: const Icon(Icons.attach_file, color: Color(0xFF0084FF)),
+          ),
+          Expanded(
+            child: Container(
+              decoration: BoxDecoration(
+                color: const Color(0xFFF0F2F5),
+                borderRadius: BorderRadius.circular(24),
+              ),
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: TextField(
+                controller: _controller,
+                minLines: 1,
+                maxLines: 4,
+                decoration: const InputDecoration(
+                  hintText: 'Type a message...',
+                  border: InputBorder.none,
                 ),
-                IconButton(
-                  onPressed: widget.onAttachFile,
-                  icon: Icon(
-                    Icons.attach_file,
-                    color: Colors.grey[600],
-                    size: 24,
-                  ),
-                ),
-                IconButton(
-                  onPressed: () {
-                    // TODO: Voice message functionality
-                  },
-                  icon: Icon(
-                    Icons.mic,
-                    color: Colors.grey[600],
-                    size: 24,
-                  ),
-                ),
-              ],
-            ),
-            // Text input
-            Expanded(
-              child: Container(
-                margin: const EdgeInsets.symmetric(horizontal: 12),
-                decoration: BoxDecoration(
-                  color: Colors.grey[100],
-                  borderRadius: BorderRadius.circular(25),
-                ),
-                child: TextField(
-                  controller: _controller,
-                  onChanged: (value) {
-                    setState(() {
-                      _isTyping = value.isNotEmpty;
-                    });
-                  },
-                  decoration: InputDecoration(
-                    hintText: 'Type a message...',
-                    hintStyle: TextStyle(color: Colors.grey[500]),
-                    border: InputBorder.none,
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 20,
-                      vertical: 12,
-                    ),
-                  ),
-                  style: const TextStyle(
-                    fontSize: 16,
-                    color: Colors.black87,
-                  ),
-                  maxLines: null,
-                  textCapitalization: TextCapitalization.sentences,
-                ),
+                onSubmitted: (_) => _handleSend(),
               ),
             ),
-            // Send button or typing indicator
-            _isTyping
-                ? Container(
-                    margin: const EdgeInsets.only(left: 8),
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: Colors.blue,
-                      shape: BoxShape.circle,
-                    ),
-                    child: const SizedBox(
-                      width: 24,
-                      height: 24,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                      ),
-                    ),
-                  )
-                : IconButton(
-                    onPressed: _sendMessage,
-                    icon: const Icon(
-                      Icons.send,
-                      color: Colors.blue,
-                      size: 24,
-                    ),
-                  ),
-          ],
-        ),
+          ),
+          const SizedBox(width: 12),
+          InkWell(
+            onTap: _handleSend,
+            borderRadius: BorderRadius.circular(24),
+            child: Container(
+              padding: const EdgeInsets.all(12),
+              decoration: const BoxDecoration(
+                color: Color(0xFF0084FF),
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(
+                Icons.send,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

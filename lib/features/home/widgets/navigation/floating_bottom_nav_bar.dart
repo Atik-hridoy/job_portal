@@ -24,7 +24,7 @@ class _FloatingBottomNavBarState extends State<FloatingBottomNavBar>
   void initState() {
     super.initState();
     _controllers = List.generate(
-      4,
+      5,
       (index) => AnimationController(
         duration: const Duration(milliseconds: 300),
         vsync: this,
@@ -75,8 +75,9 @@ class _FloatingBottomNavBarState extends State<FloatingBottomNavBar>
         children: [
           _buildFloatingNavItem(0, Icons.home_rounded, 'Home'),
           _buildFloatingNavItem(1, Icons.search_rounded, 'Search'),
-          _buildFloatingNavItem(2, Icons.message_rounded, 'Message'),
-          _buildFloatingNavItem(3, Icons.person_rounded, 'Profile'),
+          _buildFloatingNavItem(2, Icons.dynamic_feed_rounded, 'Post'),
+          _buildFloatingNavItem(3, Icons.message_rounded, 'Message'),
+          _buildFloatingNavItem(4, Icons.person_rounded, 'Profile'),
         ],
       ),
     );

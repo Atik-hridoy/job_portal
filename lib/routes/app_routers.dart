@@ -7,4 +7,5 @@ class Routes {
   static const otp = '/otp';
   static const otpSuccess = '/otp-success';
   static const home = '/home';
+  static const messages = '/messages';
 }

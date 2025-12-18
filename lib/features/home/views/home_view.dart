@@ -4,6 +4,7 @@ import '../widgets/navigation/floating_bottom_nav_bar.dart';
 import '../widgets/category_chip_widget.dart';
 import 'location/location_view.dart';
 import '../../profile/views/profile_view.dart';
+import '../../messaging/views/chat_list_view.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -277,16 +278,7 @@ class _HomeViewState extends State<HomeView> {
 
   Widget _buildMessageView() {
     return const SafeArea(
-      child: Center(
-        child: Text(
-          'Message View',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      ),
+      child: ChatListView(),
     );
   }
 

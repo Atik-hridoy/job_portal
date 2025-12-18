@@ -11,6 +11,7 @@ import 'package:job_portal/features/auth/bindings/auth_binding.dart';
 import 'package:job_portal/features/home/views/home_view.dart';
 import 'package:job_portal/features/home/bindings/home_binding.dart';
 import 'package:job_portal/features/get_started/views/get_start_view.dart';
+import 'package:job_portal/features/messaging/views/message_view.dart';
 import 'package:job_portal/routes/app_routers.dart';
 
 class AppPages {
@@ -67,6 +68,12 @@ class AppPages {
       page: () => const HomeView(),
       binding: HomeBinding(),
       transition: Transition.fadeIn,
+      transitionDuration: const Duration(milliseconds: 300),
+    ),
+    GetPage(
+      name: Routes.messages,
+      page: () => const MessageView(),
+      transition: Transition.rightToLeft,
       transitionDuration: const Duration(milliseconds: 300),
     ),
   ];
